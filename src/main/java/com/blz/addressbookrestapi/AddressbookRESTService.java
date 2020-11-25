@@ -19,4 +19,8 @@ public class AddressbookRESTService {
 	public long countEntries(IOService restIo) {
 		return addressbookList.size();
 	}
+
+	public void addContactToAddressbook(AddressbookData addressbookData, IOService restIo) {
+		addressbookList.add(addressbookData);		
+	}
 }
