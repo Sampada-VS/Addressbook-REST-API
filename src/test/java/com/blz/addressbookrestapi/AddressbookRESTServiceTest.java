@@ -65,9 +65,12 @@ public class AddressbookRESTServiceTest {
 		AddressbookData[] arrayOfContacts = getAddressbookList();
 		addressbookRESTService = new AddressbookRESTService(Arrays.asList(arrayOfContacts));
 		AddressbookData[] arrayOfPerson = {
-				new AddressbookData(0, "Mark", "K", "Dadar", "Mumbai", "Maharashtra", "498892", "9876544213","mt@gm.com"),
-				new AddressbookData(0, "Terrisa", "T", "Karve", "Pune", "Maharashtra", "491792", "9877543213","tt@gm.com"),
-				new AddressbookData(0, "Charlie", "K", "S", "New Delhi", "Delhi", "493792", "9879543213","ck@gm.com") };
+				new AddressbookData(0, "Mark", "K", "Dadar", "Mumbai", "Maharashtra", "498892", "9876544213",
+						"mt@gm.com"),
+				new AddressbookData(0, "Terrisa", "T", "Karve", "Pune", "Maharashtra", "491792", "9877543213",
+						"tt@gm.com"),
+				new AddressbookData(0, "Charlie", "K", "S", "New Delhi", "Delhi", "493792", "9879543213",
+						"ck@gm.com") };
 
 		for (AddressbookData addressbookData : arrayOfPerson) {
 
@@ -81,12 +84,12 @@ public class AddressbookRESTServiceTest {
 		long entries = addressbookRESTService.countEntries(REST_IO);
 		assertEquals(5, entries);
 	}
-	
+
 	@Test
 	public void givenPhoneNumber_WhenUpdated_ShouldMatch200Response() {
 		AddressbookData[] arrayOfContacts = getAddressbookList();
 		addressbookRESTService = new AddressbookRESTService(Arrays.asList(arrayOfContacts));
-		addressbookRESTService.updatePersonContactNo("Bill","8876543211", REST_IO);
+		addressbookRESTService.updatePersonContactNo("Bill", "8876543211", REST_IO);
 		AddressbookData addressbookData = addressbookRESTService.getAddressbookData("Bill");
 
 		String addressbookJson = new Gson().toJson(addressbookData);
@@ -98,4 +101,19 @@ public class AddressbookRESTServiceTest {
 		assertEquals(200, statusCode);
 	}
 
+	@Test
+	public void givenContact_WhenDeleted_ShouldMatch200ResponseAndCount() {
+		AddressbookData[] arrayOfContacts = getAddressbookList();
+		addressbookRESTService = new AddressbookRESTService(Arrays.asList(arrayOfContacts));
+		AddressbookData addressbookData = addressbookRESTService.getAddressbookData("Terrisa");
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		Response response = request.delete("/addressbook/" + addressbookData.id);
+		int statusCode = response.getStatusCode();
+		assertEquals(200, statusCode);
+
+		addressbookRESTService.deleteAddressbookEntry(addressbookData.firstName, REST_IO);
+		long entries = addressbookRESTService.countEntries(REST_IO);
+		assertEquals(4, entries);
+	}
 }
