@@ -81,4 +81,21 @@ public class AddressbookRESTServiceTest {
 		long entries = addressbookRESTService.countEntries(REST_IO);
 		assertEquals(5, entries);
 	}
+	
+	@Test
+	public void givenPhoneNumber_WhenUpdated_ShouldMatch200Response() {
+		AddressbookData[] arrayOfContacts = getAddressbookList();
+		addressbookRESTService = new AddressbookRESTService(Arrays.asList(arrayOfContacts));
+		addressbookRESTService.updatePersonContactNo("Bill","8876543211", REST_IO);
+		AddressbookData addressbookData = addressbookRESTService.getAddressbookData("Bill");
+
+		String addressbookJson = new Gson().toJson(addressbookData);
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		request.body(addressbookJson);
+		Response response = request.put("/addressbook/" + addressbookData.id);
+		int statusCode = response.getStatusCode();
+		assertEquals(200, statusCode);
+	}
+
 }

@@ -23,4 +23,18 @@ public class AddressbookRESTService {
 	public void addContactToAddressbook(AddressbookData addressbookData, IOService restIo) {
 		addressbookList.add(addressbookData);		
 	}
+
+	public AddressbookData getAddressbookData(String firstName) {
+		AddressbookData addressbookData;
+		addressbookData = this.addressbookList.stream().filter(dataItem -> dataItem.firstName.equals(firstName))
+				.findFirst().orElse(null);
+		return addressbookData;
+	}
+
+	public void updatePersonContactNo(String firstName, String phone, IOService restIo) {
+		AddressbookData addressbookData = this.getAddressbookData(firstName);
+		if (addressbookData != null)
+			addressbookData.phone = phone;
+		
+	}
 }
